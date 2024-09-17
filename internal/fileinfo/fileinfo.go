@@ -1,6 +1,7 @@
 package fileinfo
 
 import (
+	"io/ioutil"
 	"my_ls/internal/flags"
 	"os"
 	"os/user"
@@ -22,19 +23,13 @@ type FileInfo struct {
 	BlockSize int64
 }
 
-func GetFileInfo(path string, options flags.Options) ([]FileInfo, error) {
+func GetFileInfo(path string, options flags.Options) ([]FileInfo, int64, error) {
 	var files []FileInfo
 	var totalBlocks int64
 
-	dir, err := os.Open(path)
+	entries, err := ioutil.ReadDir(path)
 	if err != nil {
-		return nil, err
-	}
-	defer dir.Close()
-
-	entries, err := dir.Readdir(-1)
-	if err != nil {
-		return nil, err
+		return nil, 0, err
 	}
 
 	for _, entry := range entries {
@@ -49,16 +44,10 @@ func GetFileInfo(path string, options flags.Options) ([]FileInfo, error) {
 		}
 
 		totalBlocks += file.BlockSize
-
 		files = append(files, file)
 	}
 
-	if options.Long {
-		// Add a dummy file to store the total block count
-		files = append([]FileInfo{{Name: "total", BlockSize: totalBlocks}}, files...)
-	}
-
-	return files, nil
+	return files, totalBlocks, nil
 }
 
 func GetSingleFileInfo(path string) (FileInfo, error) {
@@ -82,7 +71,7 @@ func getSingleFileInfo(path string, info os.FileInfo) (FileInfo, error) {
 
 	if stat, ok := info.Sys().(*syscall.Stat_t); ok {
 		file.NumLinks = int(stat.Nlink)
-		file.BlockSize = stat.Blocks * 512 / 1024
+		file.BlockSize = stat.Blocks
 		file.User = getUserName(stat.Uid)
 		file.Group = getGroupName(stat.Gid)
 

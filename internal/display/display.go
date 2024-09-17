@@ -15,9 +15,9 @@ const (
 	colorCyan  = "\033[36m"
 )
 
-func DisplayFiles(files []fileinfo.FileInfo, options flags.Options) {
+func DisplayFiles(files []fileinfo.FileInfo, totalBlocks int64, options flags.Options, isDir bool) {
 	if options.Long {
-		displayLong(files)
+		displayLong(files, totalBlocks, isDir)
 	} else {
 		displayShort(files)
 	}
@@ -25,27 +25,16 @@ func DisplayFiles(files []fileinfo.FileInfo, options flags.Options) {
 
 func displayShort(files []fileinfo.FileInfo) {
 	for _, file := range files {
-		if file.Name != "total" {
-			fmt.Println(getColoredName(file))
-		}
+		fmt.Println(getColoredName(file))
 	}
 }
 
-func displayLong(files []fileinfo.FileInfo) {
-	var totalBlocks int64
-	var regularFiles []fileinfo.FileInfo
-
-	for _, file := range files {
-		if file.Name == "total" {
-			totalBlocks = file.BlockSize
-		} else {
-			regularFiles = append(regularFiles, file)
-		}
+func displayLong(files []fileinfo.FileInfo, totalBlocks int64, isDir bool) {
+	if isDir {
+		fmt.Printf("total %d\n", totalBlocks/2) 
 	}
 
-	fmt.Printf("total %d\n", totalBlocks)
-
-	for _, file := range regularFiles {
+	for _, file := range files {
 		mode := file.Mode.String()
 		links := file.NumLinks
 		size := file.Size

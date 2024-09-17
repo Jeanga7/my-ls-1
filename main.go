@@ -45,43 +45,54 @@ func parseFlags(args []string) ([]string, flags.Options) {
 func main() {
 	paths, options := parseFlags(os.Args)
 
-	for _, path := range paths {
-		err := processPath(path, options)
+	if len(paths) > 1 {
+		for i, path := range paths {
+			if i > 0 {
+				fmt.Println()
+			}
+			// fmt.Printf("%s:\n", path)
+			err := processPath(path, options, true)
+			if err != nil {
+				fmt.Fprintf(os.Stderr, "error: %v\n", err)
+			}
+		}
+	} else {
+		err := processPath(paths[0], options, false)
 		if err != nil {
 			fmt.Fprintf(os.Stderr, "error: %v\n", err)
 		}
 	}
 }
 
-func processPath(path string, options flags.Options) error {
+func processPath(path string, options flags.Options, forceDir bool) error {
 	fileInfo, err := os.Stat(path)
 	if err != nil {
 		return err
 	}
 
 	if fileInfo.IsDir() {
-		files, err := fileinfo.GetFileInfo(path, options)
+		files, totalBlocks, err := fileinfo.GetFileInfo(path, options)
 		if err != nil {
 			return err
 		}
 
-		if len(os.Args) > 2 {
-			fmt.Printf("%s:\n", path)
-		}
-
 		sort.SortFiles(files, options)
-		display.DisplayFiles(files, options)
+		display.DisplayFiles(files, totalBlocks, options, true)
 	} else {
 		file, err := fileinfo.GetSingleFileInfo(path)
 		if err != nil {
 			return err
 		}
-		display.DisplayFiles([]fileinfo.FileInfo{
-			{Name: "total", BlockSize: file.BlockSize},
-			file,
-		}, options)
+		display.DisplayFiles([]fileinfo.FileInfo{file}, file.BlockSize, options, forceDir)
 	}
 
 	return nil
 }
 
+func isDirectory(path string) bool {
+	fileInfo, err := os.Stat(path)
+	if err != nil {
+		return false
+	}
+	return fileInfo.IsDir()
+}

@@ -18,7 +18,7 @@
 
 ##### Run both my-ls and the system command `ls` with the flag: `"-l"`. `done`
 
-###### Does it display the same files and/or folders with the same display?
+###### Does it display the same files and/or folders with the same display?    `done`
 
 ##### Run both my-ls and the system command `ls` with the arguments: `"-l <file name>"`.
 
