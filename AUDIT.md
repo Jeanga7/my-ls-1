@@ -1,12 +1,12 @@
 #### Functional
 
-###### Has the requirement for the allowed packages been respected?
+###### Has the requirement for the allowed packages been respected?   `done`
 
-###### Can you confirm that the `os/exec` package was not used in this project?
+###### Can you confirm that the `os/exec` package was not used in this project?   `done`
 
-##### Run both my-ls and the system command `ls` with no arguments.
+##### Run both my-ls and the system command `ls` with no arguments.    `done`
 
-###### Does it display the same files and/or folders in the same order?
+###### Does it display the same files and/or folders in the same order?    `done`
 
 ##### Run both my-ls and the system command `ls` with the arguments: `"<file name>"`.
 

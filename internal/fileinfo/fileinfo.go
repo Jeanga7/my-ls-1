@@ -23,43 +23,64 @@ type FileInfo struct {
 func GetFileInfo(path string, options flags.Options) ([]FileInfo, error) {
 	var files []FileInfo
 
-	err := walkDir(path, func(path string, info os.FileInfo, err error) error {
-		if err != nil {
-			return err
+	dir, err := os.Open(path)
+	if err != nil {
+		return nil, err
+	}
+	defer dir.Close()
+
+	entries, err := dir.Readdir(-1)
+	if err != nil {
+		return nil, err
+	}
+
+	for _, entry := range entries {
+		if !options.All && strings.HasPrefix(entry.Name(), ".") {
+			continue
 		}
 
-		if !options.All && strings.HasPrefix(info.Name(), ".") && info.Name() != "." {
-			if info.IsDir() {
-				return os.ErrPermission 
-			}
-			return nil
-		}
-
+		fullPath := path + "/" + entry.Name()
 		file := FileInfo{
-			Name:    info.Name(),
-			Path:    path,
-			IsDir:   info.IsDir(),
-			Size:    info.Size(),
-			Mode:    info.Mode(),
-			ModTime: info.ModTime().Unix(),
+			Name:    entry.Name(),
+			Path:    fullPath,
+			IsDir:   entry.IsDir(),
+			Size:    entry.Size(),
+			Mode:    entry.Mode(),
+			ModTime: entry.ModTime().Unix(),
 		}
 
 		if options.Long {
-			uid, gid := getFileOwner(info)
+			uid, gid := getFileOwner(entry)
 			file.User = getUserName(uid)
 			file.Group = getGroupName(gid)
 		}
 
 		files = append(files, file)
+	}
 
-		if !options.Recursive && info.IsDir() && path != "." {
-			return os.ErrPermission 
-		}
+	return files, nil
+}
 
-		return nil
-	})
+func GetSingleFileInfo(path string) (FileInfo, error) {
+	info, err := os.Lstat(path)
+	if err != nil {
+		return FileInfo{}, err
+	}
 
-	return files, err
+	file := FileInfo{
+		Name:    info.Name(),
+		Path:    path,
+		IsDir:   info.IsDir(),
+		Size:    info.Size(),
+		Mode:    info.Mode(),
+		ModTime: info.ModTime().Unix(),
+	}
+
+	uid, gid := getFileOwner(info)
+	file.User = getUserName(uid)
+	file.Group = getGroupName(gid)
+
+	return file, nil
 }
 
 func walkDir(root string, fn func(string, os.FileInfo, error) error) error {

@@ -54,14 +54,30 @@ func main() {
 }
 
 func processPath(path string, options flags.Options) error {
-	files, err := fileinfo.GetFileInfo(path, options)
+	fileInfo, err := os.Stat(path)
 	if err != nil {
 		return err
 	}
 
-	sort.SortFiles(files, options)
+	if fileInfo.IsDir() {
+		files, err := fileinfo.GetFileInfo(path, options)
+		if err != nil {
+			return err
+		}
 
-	display.DisplayFiles(files, options)
+		if len(os.Args) > 2 {
+			fmt.Printf("%s:\n", path)
+		}
+
+		sort.SortFiles(files, options)
+		display.DisplayFiles(files, options)
+	} else {
+		file, err := fileinfo.GetSingleFileInfo(path)
+		if err != nil {
+			return err
+		}
+		display.DisplayFiles([]fileinfo.FileInfo{file}, options)
+	}
 
 	return nil
 }
