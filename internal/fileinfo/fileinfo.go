@@ -10,18 +10,21 @@ import (
 )
 
 type FileInfo struct {
-	Name    string
-	Path    string
-	IsDir   bool
-	Size    int64
-	Mode    os.FileMode
-	ModTime int64
-	User    string
-	Group   string
+	Name      string
+	Path      string
+	IsDir     bool
+	Size      int64
+	Mode      os.FileMode
+	ModTime   int64
+	User      string
+	Group     string
+	NumLinks  int
+	BlockSize int64
 }
 
 func GetFileInfo(path string, options flags.Options) ([]FileInfo, error) {
 	var files []FileInfo
+	var totalBlocks int64
 
 	dir, err := os.Open(path)
 	if err != nil {
@@ -40,22 +43,19 @@ func GetFileInfo(path string, options flags.Options) ([]FileInfo, error) {
 		}
 
 		fullPath := path + "/" + entry.Name()
-		file := FileInfo{
-			Name:    entry.Name(),
-			Path:    fullPath,
-			IsDir:   entry.IsDir(),
-			Size:    entry.Size(),
-			Mode:    entry.Mode(),
-			ModTime: entry.ModTime().Unix(),
+		file, err := getSingleFileInfo(fullPath, entry)
+		if err != nil {
+			continue
 		}
 
-		if options.Long {
-			uid, gid := getFileOwner(entry)
-			file.User = getUserName(uid)
-			file.Group = getGroupName(gid)
-		}
+		totalBlocks += file.BlockSize
 
 		files = append(files, file)
+	}
+
+	if options.Long {
+		// Add a dummy file to store the total block count
+		files = append([]FileInfo{{Name: "total", BlockSize: totalBlocks}}, files...)
 	}
 
 	return files, nil
@@ -67,6 +67,10 @@ func GetSingleFileInfo(path string) (FileInfo, error) {
 		return FileInfo{}, err
 	}
 
+	return getSingleFileInfo(path, info)
+}
+
+func getSingleFileInfo(path string, info os.FileInfo) (FileInfo, error) {
 	file := FileInfo{
 		Name:    info.Name(),
 		Path:    path,
@@ -76,11 +80,36 @@ func GetSingleFileInfo(path string) (FileInfo, error) {
 		ModTime: info.ModTime().Unix(),
 	}
 
-	uid, gid := getFileOwner(info)
-	file.User = getUserName(uid)
-	file.Group = getGroupName(gid)
+	if stat, ok := info.Sys().(*syscall.Stat_t); ok {
+		file.NumLinks = int(stat.Nlink)
+		file.BlockSize = stat.Blocks * 512 / 1024
+		file.User = getUserName(stat.Uid)
+		file.Group = getGroupName(stat.Gid)
+
+		if file.IsDir {
+			subdirs, err := countSubdirectories(path)
+			if err == nil {
+				file.NumLinks = subdirs + 2
+			}
+		}
+	}
 
 	return file, nil
+}
+
+func countSubdirectories(path string) (int, error) {
+	entries, err := os.ReadDir(path)
+	if err != nil {
+		return 0, err
+	}
+
+	count := 0
+	for _, entry := range entries {
+		if entry.IsDir() {
+			count++
+		}
+	}
+	return count, nil
 }
 
 func walkDir(root string, fn func(string, os.FileInfo, error) error) error {

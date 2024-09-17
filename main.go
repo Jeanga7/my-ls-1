@@ -76,8 +76,12 @@ func processPath(path string, options flags.Options) error {
 		if err != nil {
 			return err
 		}
-		display.DisplayFiles([]fileinfo.FileInfo{file}, options)
+		display.DisplayFiles([]fileinfo.FileInfo{
+			{Name: "total", BlockSize: file.BlockSize},
+			file,
+		}, options)
 	}
 
 	return nil
 }
+

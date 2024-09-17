@@ -8,15 +8,15 @@
 
 ###### Does it display the same files and/or folders in the same order?    `done`
 
-##### Run both my-ls and the system command `ls` with the arguments: `"<file name>"`.
+##### Run both my-ls and the system command `ls` with the arguments: `"<file name>"`.  `done`
 
-###### Does it display the same file?
+###### Does it display the same file?    `done`
 
-##### Run both my-ls and the system command `ls` with the arguments: `"<directory name>"`.
+##### Run both my-ls and the system command `ls` with the arguments: `"<directory name>"`.   `done`
 
-###### Does it display the same files and/or folders in the same order?
+###### Does it display the same files and/or folders in the same order?  `done`
 
-##### Run both my-ls and the system command `ls` with the flag: `"-l"`.
+##### Run both my-ls and the system command `ls` with the flag: `"-l"`. `done`
 
 ###### Does it display the same files and/or folders with the same display?
 

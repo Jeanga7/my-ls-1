@@ -25,17 +25,29 @@ func DisplayFiles(files []fileinfo.FileInfo, options flags.Options) {
 
 func displayShort(files []fileinfo.FileInfo) {
 	for _, file := range files {
-		fmt.Println(getColoredName(file))
+		if file.Name != "total" {
+			fmt.Println(getColoredName(file))
+		}
 	}
 }
 
 func displayLong(files []fileinfo.FileInfo) {
+	var totalBlocks int64
+	var regularFiles []fileinfo.FileInfo
+
 	for _, file := range files {
-		mode := file.Mode.String()
-		links := 1
-		if file.Mode&os.ModeSymlink != 0 {
-			links = 2
+		if file.Name == "total" {
+			totalBlocks = file.BlockSize
+		} else {
+			regularFiles = append(regularFiles, file)
 		}
+	}
+
+	fmt.Printf("total %d\n", totalBlocks)
+
+	for _, file := range regularFiles {
+		mode := file.Mode.String()
+		links := file.NumLinks
 		size := file.Size
 		timeStr := time.Unix(file.ModTime, 0).Format("Jan _2 15:04")
 		name := getColoredName(file)
