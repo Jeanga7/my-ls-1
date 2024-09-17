@@ -34,7 +34,7 @@ func displayShort(files []fileinfo.FileInfo) {
 func displayLong(files []fileinfo.FileInfo) {
 	for _, file := range files {
 		mode := file.Mode.String()
-		links := 1 // Simplification, à implémenter correctement
+		links := 1
 		size := file.Size
 		timeStr := time.Unix(file.ModTime, 0).Format("Jan _2 15:04")
 		name := getColoredName(file.Name, file.Mode)
@@ -55,7 +55,7 @@ func getColoredName(name string, mode os.FileMode) string {
 		return colorGreen + name + colorReset
 	case mode&os.ModeDevice != 0:
 		return colorYellow + name + colorReset
-	case mode&0111 != 0: // Executable
+	case mode&0111 != 0:
 		return colorRed + name + colorReset
 	default:
 		return name

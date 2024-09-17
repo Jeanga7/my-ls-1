@@ -4,10 +4,9 @@ import (
 	"my_ls/internal/flags"
 	"os"
 	"os/user"
-	"path/filepath"
-	"runtime"
 	"strconv"
-	//"syscall"
+	"strings"
+	"syscall"
 )
 
 type FileInfo struct {
@@ -24,15 +23,14 @@ type FileInfo struct {
 func GetFileInfo(path string, options flags.Options) ([]FileInfo, error) {
 	var files []FileInfo
 
-	err := filepath.Walk(path, func(path string, info os.FileInfo, err error) error {
+	err := walkDir(path, func(path string, info os.FileInfo, err error) error {
 		if err != nil {
 			return err
 		}
 
-		// Ignorer les fichiers cachés si l'option -a n'est pas activée
-		if !options.All && info.Name()[0] == '.' && info.Name() != "." {
+		if !options.All && strings.HasPrefix(info.Name(), ".") && info.Name() != "." {
 			if info.IsDir() {
-				return filepath.SkipDir
+				return os.ErrPermission 
 			}
 			return nil
 		}
@@ -46,7 +44,6 @@ func GetFileInfo(path string, options flags.Options) ([]FileInfo, error) {
 			ModTime: info.ModTime().Unix(),
 		}
 
-		// Ajouter les informations sur l'utilisateur et le groupe si l'option -l est activée
 		if options.Long {
 			uid, gid := getFileOwner(info)
 			file.User = getUserName(uid)
@@ -56,7 +53,7 @@ func GetFileInfo(path string, options flags.Options) ([]FileInfo, error) {
 		files = append(files, file)
 
 		if !options.Recursive && info.IsDir() && path != "." {
-			return filepath.SkipDir
+			return os.ErrPermission 
 		}
 
 		return nil
@@ -65,18 +62,55 @@ func GetFileInfo(path string, options flags.Options) ([]FileInfo, error) {
 	return files, err
 }
 
-// getFileOwner retourne l'UID et le GID sous Unix/Linux ou des valeurs par défaut sous Windows
-func getFileOwner(info os.FileInfo) (uint32, uint32) {
-	if runtime.GOOS == "windows" {
-		return 0, 0
+func walkDir(root string, fn func(string, os.FileInfo, error) error) error {
+	info, err := os.Lstat(root)
+	if err != nil {
+		return fn(root, nil, err)
+	}
+	return walkDirRecur(root, info, fn)
+}
+
+func walkDirRecur(path string, info os.FileInfo, fn func(string, os.FileInfo, error) error) error {
+	if !info.IsDir() {
+		return fn(path, info, nil)
 	}
 
-	// Pour Unix/Linux, utilise syscall.Stat_t
-	//if stat, ok := info.Sys().(*syscall.Stat_t); ok {
-	//	return stat.Uid, stat.Gid
-	//}
+	err := fn(path, info, nil)
+	if err != nil {
+		if err == os.ErrPermission {
+			return nil
+		}
+		return err
+	}
 
-	// Retourne 0, 0 si aucune information n'est disponible
+	entries, err := os.ReadDir(path)
+	if err != nil {
+		return fn(path, info, err)
+	}
+
+	for _, entry := range entries {
+		subInfo, err := entry.Info()
+		if err != nil {
+			if err := fn(strings.Join([]string{path, entry.Name()}, "/"), nil, err); err != nil && err != os.ErrPermission {
+				return err
+			}
+		} else {
+			err = walkDirRecur(strings.Join([]string{path, entry.Name()}, "/"), subInfo, fn)
+			if err != nil {
+				if err != os.ErrPermission {
+					return err
+				}
+			}
+		}
+	}
+
+	return nil
+}
+
+func getFileOwner(info os.FileInfo) (uint32, uint32) {
+	if stat, ok := info.Sys().(*syscall.Stat_t); ok {
+		return stat.Uid, stat.Gid
+	}
 	return 0, 0
 }
 

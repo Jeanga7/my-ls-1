@@ -2,32 +2,43 @@ package utils
 
 import (
 	"os"
-	"path/filepath"
-	"runtime"
-	//"syscall"
+	"strings"
+	"syscall"
 )
 
-// GetLinkTarget retourne la cible d'un lien symbolique
 func GetLinkTarget(path string) (string, error) {
 	target, err := os.Readlink(path)
 	if err != nil {
 		return "", err
 	}
-	if !filepath.IsAbs(target) {
-		target = filepath.Join(filepath.Dir(path), target)
+	if !isAbs(target) {
+		target = join(dir(path), target)
 	}
 	return target, nil
 }
 
 func CountHardLinks(info os.FileInfo) int {
-	// Pour Windows, retourne 1 par défaut
-	if runtime.GOOS == "windows" {
-		return 1
+	if stat, ok := info.Sys().(*syscall.Stat_t); ok {
+		return int(stat.Nlink)
 	}
-
-	// Pour Unix/Linux, utilise syscall.Stat_t
-	//if stat, ok := info.Sys().(*syscall.Stat_t); ok {
-	//	return int(stat.Nlink)
-	//}
 	return 1
+}
+
+func isAbs(path string) bool {
+	return strings.HasPrefix(path, "/")
+}
+
+func join(elem ...string) string {
+	return strings.Join(elem, "/")
+}
+
+func dir(path string) string {
+	i := strings.LastIndex(path, "/")
+	if i == -1 {
+		return "."
+	}
+	if i == 0 {
+		return "/"
+	}
+	return path[:i]
 }

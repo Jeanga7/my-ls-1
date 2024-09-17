@@ -3,11 +3,11 @@
 # Fonction pour tester et comparer les sorties
 function test_ls {
     cmd_args="$@"
-    echo "Testing: my-ls $cmd_args"
+    echo "Testing: go run . $cmd_args"
     echo "-----------------------------------"
     
-    # Exécute ls et my-ls avec les mêmes arguments
-    ./my-ls $cmd_args > my_ls_output.txt
+    # Exécute go run . et ls avec les mêmes arguments
+    go run . $cmd_args > my_ls_output.txt
     ls $cmd_args > ls_output.txt
     
     # Compare les résultats
@@ -99,7 +99,7 @@ test_ls -l symlink_dir
 
 # Test de la performance avec la commande time
 echo "Testing time performance with -R ~"
-time ./my-ls -R ~
+time go run . -R ~
 
 # Nettoyage
 cleanup
