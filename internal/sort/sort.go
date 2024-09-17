@@ -24,10 +24,10 @@ func SortFiles(files []fileinfo.FileInfo, options flags.Options) {
 				return files[i].ModTime > files[j].ModTime
 			}
 		}
-		
+
 		iLower := strings.ToLower(files[i].Name)
 		jLower := strings.ToLower(files[j].Name)
-		
+
 		if options.Reverse {
 			return iLower > jLower
 		}

@@ -20,13 +20,13 @@
 
 ###### Does it display the same files and/or folders with the same display?    `done`
 
-##### Run both my-ls and the system command `ls` with the arguments: `"-l <file name>"`.
+##### Run both my-ls and the system command `ls` with the arguments: `"-l <file name>"`.  `done`
 
-###### Does it display the same file with the same display?
+###### Does it display the same file with the same display?     `done`
 
-##### Run both my-ls and the system command `ls` with the arguments: `"-l <directory name>"`.
+##### Run both my-ls and the system command `ls` with the arguments: `"-l <directory name>"`.   `done`
 
-###### Does it display the same files and/or folders with the same display?
+###### Does it display the same files and/or folders with the same display?   `done`
 
 ##### Run both my-ls and the system command `ls` with the flag: `"-l /usr/bin"`.
 

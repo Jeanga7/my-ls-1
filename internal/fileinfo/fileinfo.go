@@ -1,7 +1,6 @@
 package fileinfo
 
 import (
-	"io/ioutil"
 	"my_ls/internal/flags"
 	"os"
 	"os/user"
@@ -27,7 +26,13 @@ func GetFileInfo(path string, options flags.Options) ([]FileInfo, int64, error) 
 	var files []FileInfo
 	var totalBlocks int64
 
-	entries, err := ioutil.ReadDir(path)
+	dir, err := os.Open(path)
+	if err != nil {
+		return nil, 0, err
+	}
+	defer dir.Close()
+
+	entries, err := dir.Readdir(-1)
 	if err != nil {
 		return nil, 0, err
 	}
