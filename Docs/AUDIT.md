@@ -28,9 +28,9 @@
 
 ###### Does it display the same files and/or folders with the same display?   `done`
 
-##### Run both my-ls and the system command `ls` with the flag: `"-l /usr/bin"`.
+##### Run both my-ls and the system command `ls` with the flag: `"-l /usr/bin"`.  `done`
 
-###### Does it display the same files and/or folders with the same display? Be aware of symbolic links.
+###### Does it display the same files and/or folders with the same display? Be aware of symbolic links.   `done`
 
 ##### Run both my-ls and the system command `ls` with the flag: `"-R"`, in a directory with folders in it.
 

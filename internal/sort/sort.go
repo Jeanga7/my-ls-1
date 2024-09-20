@@ -8,14 +8,6 @@ import (
 
 func SortFiles(files []fileinfo.FileInfo, options flags.Options) {
 	bubbleSort(files, func(i, j int) bool {
-		if !options.All {
-			iHidden := strings.HasPrefix(files[i].Name, ".")
-			jHidden := strings.HasPrefix(files[j].Name, ".")
-			if iHidden != jHidden {
-				return jHidden
-			}
-		}
-
 		if options.Time {
 			if files[i].ModTime != files[j].ModTime {
 				if options.Reverse {

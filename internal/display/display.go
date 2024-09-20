@@ -1,81 +1,43 @@
 package display
 
 import (
-	"fmt"
 	"my_ls/internal/fileinfo"
 	"my_ls/internal/flags"
 	"os"
-	"time"
 )
 
 const (
-	colorReset = "\033[0m"
-	colorBlue  = "\033[34m"
-	colorGreen = "\033[32m"
-	colorCyan  = "\033[36m"
+	ColorReset = "\033[0m"
+	ColorBlue  = "\033[34m"
+	ColorGreen = "\033[32m"
+	ColorCyan  = "\033[36m"
+	ColorBold  = "\033[1m"
 )
 
 func DisplayFiles(files []fileinfo.FileInfo, totalBlocks int64, options flags.Options, isDir bool) {
-    if options.Long {
-        displayLong(files, totalBlocks, isDir)
-    } else {
-        displayShort(files)
-    }
-}
-
-
-func displayShort(files []fileinfo.FileInfo) {
-	for _, file := range files {
-		fmt.Println(getColoredName(file))
+	if options.Long {
+		DisplayLong(files, totalBlocks, isDir)
+	} else if options.Recursive {
+		DisplayRecursive(files)
+	} else if options.Reverse {
+		DisplayReverse(files)
+	} else if options.Time {
+		DisplayTime(files)
+	} else if options.All {
+		DisplayAll(files)
+	} else {
+		DisplayDefault(files)
 	}
-}
-
-func displayLong(files []fileinfo.FileInfo, totalBlocks int64, isDir bool) {
-    if isDir {
-        fmt.Printf("total %d\n", totalBlocks/2)
-    }
-
-    for _, file := range files {
-        mode := file.Mode.String()
-        if file.Mode&os.ModeSymlink != 0 {
-            mode = "l" + mode[1:]
-        }
-        links := file.NumLinks
-        size := file.Size
-        timeStr := formatTime(file.ModTime)
-        name := getColoredName(file)
-
-        fmt.Printf("%s %2d %s %s %6d %s %s", mode, links, file.User, file.Group, size, timeStr, name)
-
-        if file.Mode&os.ModeSymlink != 0 {
-            target, err := os.Readlink(file.Path)
-            if err == nil {
-                fmt.Printf(" -> %s", target)
-            }
-        }
-        fmt.Println()
-    }
-}
-
-func formatTime(modTime int64) string {
-    t := time.Unix(modTime, 0)
-    now := time.Now()
-    sixMonthsAgo := now.AddDate(0, -6, 0)
-
-    if t.After(sixMonthsAgo) {
-        return t.Format("Jan _2 15:04")
-    }
-    return t.Format("Jan _2  2006")
 }
 
 func getColoredName(file fileinfo.FileInfo) string {
 	switch {
 	case file.IsDir:
-		return colorBlue + file.Name + colorReset
+		return ColorBold + ColorBlue + file.Name + ColorReset
 	case file.Mode&0111 != 0:
-		return colorGreen + file.Name + colorReset
+		return ColorBold + ColorGreen + file.Name + ColorReset
 	case file.Mode&os.ModeSymlink != 0:
-		return colorCyan + file.Name + colorReset
+		return ColorBold + ColorCyan + file.Name + ColorReset
 	default:
 		return file.Name
 	}

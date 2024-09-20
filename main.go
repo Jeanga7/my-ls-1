@@ -45,54 +45,78 @@ func parseFlags(args []string) ([]string, flags.Options) {
 func main() {
 	paths, options := parseFlags(os.Args)
 
-	if len(paths) > 1 {
-		for i, path := range paths {
-			if i > 0 {
-				fmt.Println()
-			}
-			// fmt.Printf("%s:\n", path)
-			err := processPath(path, options, true)
-			if err != nil {
-				fmt.Fprintf(os.Stderr, "error: %v\n", err)
-			}
+	for i, path := range paths {
+		if i > 0 {
+			fmt.Println()
 		}
-	} else {
-		err := processPath(paths[0], options, false)
+		err := processPath(path, options, len(paths) > 1 || options.Recursive)
 		if err != nil {
 			fmt.Fprintf(os.Stderr, "error: %v\n", err)
 		}
 	}
 }
 
-func processPath(path string, options flags.Options, forceDir bool) error {
-	fileInfo, err := os.Stat(path)
+func processPath(path string, options flags.Options, printHeader bool) error {
+	fileInfo, err := os.Lstat(path)
 	if err != nil {
 		return err
 	}
 
 	if fileInfo.IsDir() {
-		files, totalBlocks, err := fileinfo.GetFileInfo(path, options)
+		if printHeader {
+			fmt.Printf("%s:\n", path)
+		}
+		err = processDirectory(path, options)
 		if err != nil {
 			return err
 		}
-
-		sort.SortFiles(files, options)
-		display.DisplayFiles(files, totalBlocks, options, true)
+		if options.Recursive {
+			err = processRecursive(path, options)
+		}
 	} else {
 		file, err := fileinfo.GetSingleFileInfo(path)
 		if err != nil {
 			return err
 		}
-		display.DisplayFiles([]fileinfo.FileInfo{file}, file.BlockSize, options, forceDir)
+		display.DisplayFiles([]fileinfo.FileInfo{file}, file.BlockSize, options, false)
 	}
 
 	return nil
 }
 
-func isDirectory(path string) bool {
-	fileInfo, err := os.Stat(path)
+func processDirectory(path string, options flags.Options) error {
+	files, totalBlocks, err := fileinfo.GetFileInfo(path, options)
 	if err != nil {
-		return false
+		return err
 	}
-	return fileInfo.IsDir()
+
+	sort.SortFiles(files, options)
+	display.DisplayFiles(files, totalBlocks, options, true)
+	return nil
+}
+
+func processRecursive(path string, options flags.Options) error {
+	entries, err := os.ReadDir(path)
+	if err != nil {
+		return err
+	}
+
+	for _, entry := range entries {
+		if entry.IsDir() {
+			subpath := path + "/" + entry.Name()
+			if !options.All && strings.HasPrefix(entry.Name(), ".") {
+				continue
+			}
+			fmt.Printf("\n./%s:\n", subpath)
+			err = processDirectory(subpath, options)
+			if err != nil {
+				fmt.Fprintf(os.Stderr, "error processing %s: %v\n", subpath, err)
+			}
+			err = processRecursive(subpath, options)
+			if err != nil {
+				fmt.Fprintf(os.Stderr, "error processing %s: %v\n", subpath, err)
+			}
+		}
+	}
+	return nil
 }
