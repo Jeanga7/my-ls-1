@@ -32,7 +32,7 @@
 
 ###### Does it display the same files and/or folders with the same display? Be aware of symbolic links.   `done`
 
-##### Run both my-ls and the system command `ls` with the flag: `"-R"`, in a directory with folders in it.
+##### Run both my-ls and the system command `ls` with the flag: `"-R"`, in a directory with folders in it. `done`
 
 ###### Does it display the same files and/or folders?
 
