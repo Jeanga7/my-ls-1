@@ -11,7 +11,11 @@ func DisplayTime(files []fileinfo.FileInfo) {
 		return files[i].ModTime > files[j].ModTime
 	})
 
-	for _, file := range files {
-		fmt.Println(getColoredName(file))
+	for i, file := range files {
+		if i > 0 {
+			fmt.Print(" ")
+		}
+		fmt.Print(getColoredName(file))
 	}
+	fmt.Println() 
 }

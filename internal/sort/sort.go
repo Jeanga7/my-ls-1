@@ -21,7 +21,7 @@ func SortFiles(files []fileinfo.FileInfo, options flags.Options) {
 		jLower := strings.ToLower(files[j].Name)
 
 		if options.Reverse {
-			return iLower > jLower
+			return iLower < jLower
 		}
 		return iLower < jLower
 	})

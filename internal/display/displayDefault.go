@@ -6,9 +6,11 @@ import (
 )
 
 func DisplayDefault(files []fileinfo.FileInfo) {
-	for _, file := range files {
-		if file.Name[0] != '.' {
-			fmt.Println(getColoredName(file))
+	for i, file := range files {
+		if i > 0 {
+			fmt.Print(" ")
 		}
+		fmt.Print(getColoredName(file))
 	}
+	fmt.Println() 
 }

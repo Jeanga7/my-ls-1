@@ -13,6 +13,11 @@ import (
 
 func main() {
 	paths, options := utils.ParseFlags(os.Args)
+
+	if len(paths) == 0 {
+		paths = []string{"."}
+	}
+
 	for i, path := range paths {
 		if i > 0 {
 			fmt.Println()
@@ -35,12 +40,6 @@ func processPath(path string, options flags.Options, printHeader bool) error {
 			fmt.Printf("%s:\n", path)
 		}
 		err = processDirectory(path, options)
-		if err != nil {
-			return err
-		}
-		if options.Recursive {
-			err = ProcessRecursive(path, options)
-		}
 	} else {
 		file, err := fileinfo.GetSingleFileInfo(path)
 		if err != nil {
@@ -48,18 +47,32 @@ func processPath(path string, options flags.Options, printHeader bool) error {
 		}
 		display.DisplayFiles([]fileinfo.FileInfo{file}, file.BlockSize, options, false)
 	}
-
-	return nil
+	return err
 }
 
 func processDirectory(path string, options flags.Options) error {
-	files, totalBlocks, err := fileinfo.GetFileInfo(path, options)
+	files, _, err := fileinfo.GetFileInfo(path, options)
 	if err != nil {
 		return err
 	}
 
+	if options.All {
+		dotFile, _ := fileinfo.GetSingleFileInfo(path + "/.")
+		dotDotFile, _ := fileinfo.GetSingleFileInfo(path + "/..")
+		files = append([]fileinfo.FileInfo{dotFile, dotDotFile}, files...)
+	} else {
+		visibleFiles := []fileinfo.FileInfo{}
+		for _, file := range files {
+			if file.Name[0] != '.' {
+				visibleFiles = append(visibleFiles, file)
+			}
+		}
+		files = visibleFiles
+	}
+
 	sort.SortFiles(files, options)
-	display.DisplayFiles(files, totalBlocks, options, true)
+	display.DisplayFiles(files, 0, options, true)
+
 	return nil
 }
 
