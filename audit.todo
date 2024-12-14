@@ -85,8 +85,14 @@
 ☐ Is the displayed output the same? Pay attention to `/` at the end.
 
 ##### Create file and link for this file and run both my-ls-1 and the system command ls with the arguments: `"-l <symlink file>"`
+```
+# Étape 1 : Créer un fichier
+touch original_file.txt
 
-☐ Is the displayed output the same?
+# Étape 2 : Créer un lien symbolique
+ln -s original_file.txt symlink_file
+```
+✔ Is the displayed output the same? @done(24-12-14 20:10)
 
 ##### Create directory that contains files and link for this directory and run both my-ls-1 and the system command ls with the arguments: `"-l <symlink dir>/"`
 
