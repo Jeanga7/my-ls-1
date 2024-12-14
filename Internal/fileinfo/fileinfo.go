@@ -1,7 +1,7 @@
 package fileinfo
 
 import (
-	"my_ls/internal/flags"
+	"my_ls/Internal/flags"
 	"os"
 	"os/user"
 	"strconv"

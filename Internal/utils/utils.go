@@ -1,7 +1,7 @@
 package utils
 
 import (
-	"my_ls/internal/flags"
+	"my_ls/Internal/flags"
 	"os"
 	"strings"
 	"syscall"

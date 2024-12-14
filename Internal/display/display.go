@@ -1,8 +1,8 @@
 package display
 
 import (
-	"my_ls/internal/fileinfo"
-	"my_ls/internal/flags"
+	"my_ls/Internal/fileinfo"
+	"my_ls/Internal/flags"
 	"os"
 )
 

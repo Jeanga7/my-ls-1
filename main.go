@@ -2,11 +2,11 @@ package main
 
 import (
 	"fmt"
-	"my_ls/internal/display"
-	"my_ls/internal/fileinfo"
-	"my_ls/internal/flags"
-	"my_ls/internal/sort"
-	"my_ls/internal/utils"
+	"my_ls/Internal/display"
+	"my_ls/Internal/fileinfo"
+	"my_ls/Internal/flags"
+	"my_ls/Internal/sort"
+	"my_ls/Internal/utils"
 	"os"
 	"strings"
 )

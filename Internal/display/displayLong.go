@@ -2,7 +2,7 @@ package display
 
 import (
 	"fmt"
-	"my_ls/internal/fileinfo"
+	"my_ls/Internal/fileinfo"
 	"os"
 	"time"
 )

@@ -38,23 +38,23 @@
 
 ##### Run both my-ls and the system command `ls` with the flag: `"-a"`.
 
-☐ Does it display the same files and/or folders in the same order?
+✔ Does it display the same files and/or folders in the same order? @done(24-12-14 18:02)
 
 ##### Run both my-ls and the system command `ls` with the flag: `"-r"`.
 
-☐ Does it display the same files and/or folders in the same order?
+✔ Does it display the same files and/or folders in the same order? @done(24-12-14 18:06)
 
 ##### Run both my-ls and the system command `ls` with the flag: `"-t"`.
 
-☐ Does it display the same files and/or folders in the same order?
+✔ Does it display the same files and/or folders in the same order? @done(24-12-14 18:18)
 
 ##### Run both my-ls and the system command `ls` with the flag: `"-la"`.
 
-☐ Does it display the same files and/or folders in the same order?
+✔ Does it display the same files and/or folders in the same order? @done(24-12-14 18:20)
 
 ##### Run both my-ls and the system command `ls` with the arguments: `"-l -t <directory name>"`.
 
-☐ Does it display the same files and/or folders in the same order?
+✔ Does it display the same files and/or folders in the same order? @done(24-12-14 18:28)
 
 ##### Run both my-ls and the system command `ls` with the arguments: `"-lRr <directory name>"`, in which the directory chosen contains folders.
 

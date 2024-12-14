@@ -1,8 +1,8 @@
 package sort
 
 import (
-	"my_ls/internal/fileinfo"
-	"my_ls/internal/flags"
+	"my_ls/Internal/fileinfo"
+	"my_ls/Internal/flags"
 	"strings"
 )
 
@@ -19,6 +19,9 @@ func SortFiles(files []fileinfo.FileInfo, options flags.Options) {
 
 		iLower := strings.ToLower(files[i].Name)
 		jLower := strings.ToLower(files[j].Name)
+
+		iLower = strings.TrimPrefix(iLower, ".")
+        jLower = strings.TrimPrefix(jLower, ".")
 
 		if options.Reverse {
 			return iLower < jLower
@@ -37,3 +40,4 @@ func bubbleSort(files []fileinfo.FileInfo, less func(i, j int) bool) {
 		}
 	}
 }
+
