@@ -12,7 +12,13 @@ import (
 )
 
 func main() {
+	if len(os.Args[1:]) == 1 && os.Args[1] == "-" {
+		return 
+	}
 	paths, options := utils.ParseFlags(os.Args)
+	if paths[0] == "-" && len(paths) == 1{
+		return
+	}
 	if len(paths) > 1 {
 		paths = reorderFilesAndDirs(paths)
 	}
