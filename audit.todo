@@ -96,17 +96,17 @@ ln -s original_file.txt symlink_file
 
 ##### Create directory that contains files and link for this directory and run both my-ls-1 and the system command ls with the arguments: `"-l <symlink dir>/"`
 
-☐ Is the displayed output the same? Pay attention to `/` at the end.
+✔ Is the displayed output the same? Pay attention to `/` at the end. @done(24-12-14 20:17)
 
 ##### Create directory that contains files and link for this directory and run both my-ls-1 and the system command ls with the arguments: `"-l <symlink dir>"`
 
-☐ Is the displayed output the same?
+✔ Is the displayed output the same? @done(24-12-14 20:15)
 
 ☐ As an auditor, is this project up to every standard? If not, why are you failing the project?(Empty Work, Incomplete Work, Invalid compilation, Cheating, Crashing, Leaks)
 
 #### General
 
-☐ +Does the program runs with colors as in the ls command?
+✔ +Does the program runs with colors as in the ls command? @done(24-12-14 20:17)
 
 ☐ +Does the program has other flags except for the mandatory ones?
 
