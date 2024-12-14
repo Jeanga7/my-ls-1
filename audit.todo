@@ -78,7 +78,7 @@
 
 ##### Create directory with `-` name and run both my-ls and the system command ls with the arguments: `"-"`
 
-☐ Is the displayed output the same?
+✔ Is the displayed output the same? @done(24-12-14 20:00)
 
 ##### Create file and link for this file and run both my-ls-1 and the system command ls with the arguments: `"-l <symlink file>/"`
 
