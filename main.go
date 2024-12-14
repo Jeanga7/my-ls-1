@@ -13,6 +13,9 @@ import (
 
 func main() {
 	paths, options := utils.ParseFlags(os.Args)
+	if len(paths) > 1 {
+		paths = reorderFilesAndDirs(paths)
+	}
 
 	if len(paths) == 0 {
 		paths = []string{"."}
@@ -101,4 +104,24 @@ func ProcessRecursive(path string, options flags.Options) error {
 		}
 	}
 	return nil
+}
+
+func reorderFilesAndDirs(paths []string) []string {
+    var files, dirs []string
+
+    for _, path := range paths {
+        info, err := os.Stat(path)
+        if err != nil {
+            fmt.Printf("warning: cannot access %s: %v\n", path, err)
+            continue
+        }
+
+        if info.IsDir() {
+            dirs = append(dirs, path)
+        } else {
+            files = append(files, path)
+        }
+    }
+
+    return append(files, dirs...)
 }

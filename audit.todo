@@ -62,7 +62,7 @@
 
 ##### Run both my-ls and the system command ls with the arguments: `"-l <directory name> -a <file name>"`
 
-☐ Is the output displayed the same way?
+✔ Is the output displayed the same way? @done(24-12-14 19:22)
 
 ##### Run both my-ls and the system command ls with the arguments: `"-lR <directory name>///<sub directory name>/// <directory name>/<sub directory name>/"`
 
