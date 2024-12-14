@@ -15,6 +15,7 @@ const (
 )
 
 func DisplayFiles(files []fileinfo.FileInfo, totalBlocks int64, options flags.Options, isDir bool) {
+	
 	if options.Long {
 		DisplayLong(files, totalBlocks, isDir)
 	} else if options.Recursive {

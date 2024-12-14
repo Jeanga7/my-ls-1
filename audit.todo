@@ -1,38 +1,38 @@
 #### Functional
 
-☐ Has the requirement for the allowed packages been respected?   `done`
+☐ Has the requirement for the allowed packages been respected? 
 
-☐ Can you confirm that the `os/exec` package was not used in this project?   `done`
+☐ Can you confirm that the `os/exec` package was not used in this project? 
 
-##### Run both my-ls and the system command `ls` with no arguments.    `done`
+##### Run both my-ls and the system command `ls` with no arguments.  
 
-☐ Does it display the same files and/or folders in the same order?    `done`
+✔ Does it display the same files and/or folders in the same order? @done(24-12-14 17:03)
 
-##### Run both my-ls and the system command `ls` with the arguments: `"<file name>"`.  `done`
+##### Run both my-ls and the system command `ls` with the arguments: `"<file name>"`.
 
-☐ Does it display the same file?    `done`
+✔ Does it display the same file? @done(24-12-14 17:06)
 
-##### Run both my-ls and the system command `ls` with the arguments: `"<directory name>"`.   `done`
+##### Run both my-ls and the system command `ls` with the arguments: `"<directory name>"`. 
 
-☐ Does it display the same files and/or folders in the same order?  `done`
+✔ Does it display the same files and/or folders in the same order? @done(24-12-14 17:06)
 
-##### Run both my-ls and the system command `ls` with the flag: `"-l"`. `done`
+##### Run both my-ls and the system command `ls` with the flag: `"-l"`
 
-☐ Does it display the same files and/or folders with the same display?    `done`
+✔ Does it display the same files and/or folders with the same display? @done(24-12-14 17:31)
 
-##### Run both my-ls and the system command `ls` with the arguments: `"-l <file name>"`.  `done`
+##### Run both my-ls and the system command `ls` with the arguments: `"-l <file name>"`.
 
-☐ Does it display the same file with the same display?     `done`
+✔ Does it display the same file with the same display? @done(24-12-14 17:33)
 
-##### Run both my-ls and the system command `ls` with the arguments: `"-l <directory name>"`.   `done`
+##### Run both my-ls and the system command `ls` with the arguments: `"-l <directory name>"`. 
 
-☐ Does it display the same files and/or folders with the same display?   `done`
+✔ Does it display the same files and/or folders with the same display? @done(24-12-14 17:34)
 
-##### Run both my-ls and the system command `ls` with the flag: `"-l /usr/bin"`.  `done`
+##### Run both my-ls and the system command `ls` with the flag: `"-l /usr/bin"`.
 
-☐ Does it display the same files and/or folders with the same display? Be aware of symbolic links.   `done`
+✔ Does it display the same files and/or folders with the same display? Be aware of symbolic links. @done(24-12-14 17:48)
 
-##### Run both my-ls and the system command `ls` with the flag: `"-R"`, in a directory with folders in it. `done`
+##### Run both my-ls and the system command `ls` with the flag: `"-R"`, in a directory with folders in it
 
 ☐ Does it display the same files and/or folders?
 

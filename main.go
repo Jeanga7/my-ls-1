@@ -18,13 +18,10 @@ func main() {
 		paths = []string{"."}
 	}
 
-	for i, path := range paths {
-		if i > 0 {
-			fmt.Println()
-		}
+	for _, path := range paths {
 		err := processPath(path, options, len(paths) > 1 || options.Recursive)
 		if err != nil {
-			fmt.Fprintf(os.Stderr, "error: %v\n", err)
+			fmt.Printf("error: %v\n", err)
 		}
 	}
 }
@@ -71,7 +68,11 @@ func processDirectory(path string, options flags.Options) error {
 	}
 
 	sort.SortFiles(files, options)
-	display.DisplayFiles(files, 0, options, true)
+	var totalBlocks int64
+    for _, file := range files {
+        totalBlocks += file.BlockSize
+    }
+	display.DisplayFiles(files, totalBlocks, options, true)
 
 	return nil
 }
@@ -91,11 +92,11 @@ func ProcessRecursive(path string, options flags.Options) error {
 			fmt.Printf("\n./%s:\n", subpath)
 			err = processDirectory(subpath, options)
 			if err != nil {
-				fmt.Fprintf(os.Stderr, "error processing %s: %v\n", subpath, err)
+				fmt.Printf("error processing %s: %v\n", subpath, err)
 			}
 			err = ProcessRecursive(subpath, options)
 			if err != nil {
-				fmt.Fprintf(os.Stderr, "error processing %s: %v\n", subpath, err)
+				fmt.Printf("error processing %s: %v\n", subpath, err)
 			}
 		}
 	}

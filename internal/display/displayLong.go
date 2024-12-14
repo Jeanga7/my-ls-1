@@ -20,14 +20,19 @@ func DisplayLong(files []fileinfo.FileInfo, totalBlocks int64, isDir bool) {
 		links := file.NumLinks
 		size := file.Size
 		timeStr := formatTime(file.ModTime)
-		name := getColoredName(file)
+		var name string
+		if file.Mode&os.ModeSymlink != 0{
+			name = ColorBold + ColorCyan + file.Name + ColorReset
+		}else{
+			name = getColoredName(file)
+		}
 
 		fmt.Printf("%s %2d %s %s %6d %s %s", mode, links, file.User, file.Group, size, timeStr, name)
 
 		if file.Mode&os.ModeSymlink != 0 {
 			target, err := os.Readlink(file.Path)
 			if err == nil {
-				fmt.Printf(" -> %s", target)
+				fmt.Printf(" -> %s", ColorBold + ColorGreen + target + ColorReset)
 			}
 		}
 		fmt.Println()
